@@ -1,5 +1,5 @@
 
-import {Component} from '@angular/core'
+import {Component, OnInit} from '@angular/core'
 import { Iproduct } from './product';
 @Component({
     selector:'pm-products',
@@ -7,12 +7,23 @@ import { Iproduct } from './product';
     styleUrls:["./product-list.component.css"]
 
 })
-export class ProductListComponent{
+export class ProductListComponent implements OnInit{
+  
     pageTitle :string ="Product List!"
     imageWidth:number=50;
     imageMargin:number=2;
     showImage:boolean=false;
-    listeFilter:string='cart'
+    private _listFilter:string='';
+    get listFilter():string{
+      return this._listFilter;
+    }
+    set listFilter(value:string){
+      this._listFilter=value;
+      console.log(this._listFilter)
+      this.filterProduct=this.performFilter(value);
+    }
+
+    
     products: Iproduct[]=[
         {
           "productId": 1,
@@ -46,7 +57,19 @@ export class ProductListComponent{
           "imageUrl": "assets/images/xbox-controller.png"
         }
       ];
+      filterProduct:Iproduct[]=this.products;
       toggleImage(): void{
         this.showImage=!this.showImage;
+      }
+      
+      performFilter(filterBy:string):Iproduct[]{
+        filterBy= filterBy.toLowerCase();
+        return this.products.filter((product:Iproduct)=>
+        product.productName.toLowerCase().includes(filterBy));
+        
+      }
+      ngOnInit(): void {
+        console.log("In on init")
+        
       }
 }
